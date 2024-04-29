@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Query Detail</title>
+    <style>
+        /* Стили для контейнера */
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            margin-top: 50px;
+        }
+        /* Стили для заголовка */
+        h1 {
+            text-align: center;
+        }
+        /* Стили для кнопки "Back to History" */
+        .back-button {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Query Detail</h1>
+        <strong>Your question:</strong> {{ query_detail.query_text }}<p>
+        <small>Date:</strong> {{ query_detail.timestamp }}</small>
+        <p><strong>Predicted Outcome:</strong> {{ query_detail.predicted_outcome }}</p>
+        <a href="{% url 'predict_legal_outcome' %}" class="back-button">Back to main page</a>
+    </div>
+</body>
+</html>
