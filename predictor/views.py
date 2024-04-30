@@ -7,6 +7,9 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.shortcuts import render, redirect
 
+import pickle
+import sklearn
+
 
 def login_view(request):
     if request.method == "POST":
@@ -52,10 +55,19 @@ def predict_legal_outcome(request):
         form = QueryForm(request.POST)
         if form.is_valid():
             query_text = form.cleaned_data["query_text"]
-            """
-            Бери текст из query_text, прогоняй и засунь в predicted_outcome вместо плейсходера
-            """
-            predicted_outcome = "This is a placeholder for the predicted outcome."
+
+            with open("./model.pickle", "rb") as f:
+                model = pickle.load(f)
+            pos_proba = model.predict_proba([query_text])[0][1]
+
+            if pos_proba < 0.5:
+                predicted_outcome = (f"Точно не стоит. По моим данным, вероятность попасть в тюрьму за такое "
+                                     f"составляет {(1 - pos_proba):.3f}.")
+            elif pos_proba < 0.8:
+                predicted_outcome = (f"Сомнительно. У судов бывали разные решения по этому поводу. С вероятностью "
+                                     f"{pos_proba:.3f} всё обойдётся!")
+            else:
+                predicted_outcome = f"Всё будет хорошо (с вероятностью {pos_proba:.3f}) :)"
 
             if request.user.is_authenticated:
                 query_history = QueryHistory.objects.create(
